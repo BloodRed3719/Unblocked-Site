@@ -66,17 +66,22 @@
     var storedPassword = localStorage.getItem("storedPassword"),
         resetTime = localStorage.getItem("resetTime");
 
+    var authenticated = false; // Initialize authentication status
+
     function signIn(e) {
         e.preventDefault();
         var t = document.getElementById("password").value;
+
         if ("MLOBEGHSqwerty" === t) {
             if (!storedPassword) {
                 storedPassword = t;
                 localStorage.setItem("storedPassword", storedPassword);
             }
-            alert(storedPassword);
+            authenticated = true; // Set authenticated to true when the correct password is entered
+            window.location.replace("site-1.html"); // Redirect to "site-1" page
         } else if (t === storedPassword) {
-            window.location.replace("https://bloodred3719.github.io/site-1/");
+            authenticated = true; // Set authenticated to true when the correct password is entered
+            window.location.replace("site-1.html"); // Redirect to "site-1" page
         } else {
             alert("Incorrect password. Please try again.");
         }
@@ -108,16 +113,18 @@
     }, 180000); // Call resetPassword() after 3 minutes (3 * 60 * 1000 milliseconds)
 
     setInterval(function () {
-        var e = new Date().getTime();
-        var t = resetTime - e;
-        if (t < 0) {
-            resetPassword();
-            t = 180000; // Reset password and set t to 3 minutes if time has passed
+        if (authenticated) {
+            var e = new Date().getTime();
+            var t = resetTime - e;
+            if (t < 0) {
+                resetPassword();
+                t = 180000; // Reset password and set t to 3 minutes if time has passed
+            }
+            var s = Math.floor((t / 1000) % 60); // Calculate seconds
+            var o = Math.floor((t / 60000) % 60); // Calculate minutes
+            var r = Math.floor((t / 3600000) % 24); // Calculate hours
+            document.getElementById("countdown").textContent = "Reset Countdown: " + r + " hours, " + o + " minutes, " + s + " seconds";
         }
-        var s = Math.floor((t / 1000) % 60); // Calculate seconds
-        var o = Math.floor((t / 60000) % 60); // Calculate minutes
-        var r = Math.floor((t / 3600000) % 24); // Calculate hours
-        document.getElementById("countdown").textContent = "Reset Countdown: " + o + " minutes, " + s + " seconds";
     }, 1000);
 </script>
 <div class="container">
